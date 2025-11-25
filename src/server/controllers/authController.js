@@ -29,7 +29,6 @@ function generateRefreshToken(user) {
 }
 
 export const register = async (req, res) => {
-  console.log("register");
   const { name, email, password } = req.body;
 
   try {
@@ -77,14 +76,14 @@ export const login = async (req, res) => {
     const result = await pool.query("SELECT * FROM users WHERE email = $1", [
       email,
     ]);
+    // console.log(result);
     if (result.rows.length === 0) {
-      return res.body.status(400).json({ error: "Invalid email or password" });
+      return res.status(400).json({ error: "Invalid email or password" });
     }
 
     const user = result.rows[0];
-    // console.log(user);
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await bcrypt.compare(password, user.password_hash);
     if (!isMatch) {
       return res.status(400).json({ error: "Invalid email or password" });
     }
@@ -116,15 +115,15 @@ export const login = async (req, res) => {
 };
 
 export const refreshToken = async (req, res) => {
-  const token = req.cookies.refreshToken;
-  if (!token) return res.status(401).json({ error: "No refresh token" });
-
   try {
+    const token = req.cookies.refreshToken;
+    if (!token) return res.status(401).json({ error: "No refresh token" });
+
     const decoded = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
     const accessToken = generateAccessToken(decoded);
     res.json({ accessToken });
   } catch (err) {
-    console.error(err);
+    // console.error(err);
     res.status(403).json({ error: "Invalid refresh token" });
   }
 };
