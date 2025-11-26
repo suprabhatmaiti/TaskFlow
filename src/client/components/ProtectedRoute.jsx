@@ -4,11 +4,11 @@ import useAuth from "../hook/useAuth.jsx";
 import LoadingOverlay from "./LoadingOverlay.jsx";
 
 const ProtectedRoute = ({ children }) => {
-  const { isloggedIn, loading } = useAuth();
+  const { isLoggedIn, loading } = useAuth();
   if (loading) {
     return <LoadingOverlay />;
   }
-  if (!isloggedIn) {
+  if (!isLoggedIn) {
     return <Navigate to="/" />;
   }
   return children;
