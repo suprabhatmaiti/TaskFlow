@@ -32,7 +32,7 @@ function DashboardPage() {
   const onSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
-
+  let hasMore;
   useEffect(() => {
     let mounted = true;
     async function fetchTasks() {
@@ -56,6 +56,7 @@ function DashboardPage() {
         if (pg.currentPage !== page) {
           setPage(pg.currentPage);
         }
+        hasMore = state.page < state.totalPages;
       } catch (err) {
         if (!mounted) return;
         console.error("Failed to fetch tasks:", err);
@@ -113,6 +114,12 @@ function DashboardPage() {
   };
 
   const filterRef = useRef();
+
+  const handleLoadMore = () => {
+    if (hasMore) {
+      dispatch({ type: "SET_PAGE", page: state.page + 1 });
+    }
+  };
 
   return (
     <div className="min-h-screen p-6 md:p-10 text-gray-900">
@@ -172,6 +179,16 @@ function DashboardPage() {
             <TaskList tasks={tasks} setRefresh={handleRefresh} />
           )}
         </div>
+        <div className="flex justify-center mt-8 pb-20">
+          <button
+            onClick={handleLoadMore}
+            disabled={!hasMore || loading}
+            className="bg-gray-700 hover:bg-gray-600 disabled:opacity-40 text-white px-6 py-2 rounded-lg font-semibold transition"
+          >
+            {loading ? "Loading..." : hasMore ? "Load More" : "No More"}
+          </button>
+        </div>
+        s
       </div>
       {openTaskModal && (
         <AddTaskModal
