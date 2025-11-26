@@ -35,13 +35,17 @@ function UserMenu() {
     navigate("/profile");
     setUserMenuOpen(false);
   };
-
+  const initial = user?.name?.charAt(0)?.toUpperCase();
   return (
     <div className="relative flex items-center gap-4 text-black " ref={userRef}>
-      <CgProfile
+      <div
         onClick={toggleUserMenu}
-        className="size-6 cursor-pointer hover:scale-110 text-blue-600 transition-transform duration-200"
-      />
+        className="size-9 cursor-pointer rounded-full bg-red-600 text-white flex items-center justify-center text-xl font-bold  hover:bg-red-400 "
+      >
+        <div>
+          <div>{initial}</div>
+        </div>
+      </div>
 
       <div
         className={`${userMenuOpen ? "flex" : "hidden"} absolute right-0 top-8 
@@ -57,11 +61,6 @@ function UserMenu() {
           <FiSettings className="size-5 text-gray-600" />
           <span className="font-medium">Profile</span>
         </div>
-
-        {/* <div className={classes}>
-          <FiHelpCircle className="size-5 text-gray-600" />
-          <span className="font-medium">Help & Support</span>
-        </div> */}
 
         <div onClick={handleLogoutClick} className={`${classes} text-red-600`}>
           <CgLogOut className="size-5" />

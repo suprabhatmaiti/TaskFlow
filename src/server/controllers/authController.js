@@ -30,8 +30,18 @@ function generateRefreshToken(user) {
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
-
   try {
+    if (name !== undefined && name !== null && String(name).trim() !== "") {
+      return res.status(400).json({ error: "Invalid name" });
+    }
+    if (email !== undefined && email !== null && String(email).trim() !== "") {
+      const emailStr = String(email).trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailStr)) {
+        return res.status(400).json({ error: "Invalid email format" });
+      }
+    }
+
     const userExist = await pool.query("SELECT * FROM users WHERE email = $1", [
       email,
     ]);
@@ -135,4 +145,59 @@ export const logout = (req, res) => {
     sameSite: "Strict",
   });
   res.status(200).json({ messege: "Logged out successfully" });
+};
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const fields = [];
+    const params = [];
+
+    if (name !== undefined && name !== null && String(name).trim() !== "") {
+      params.push(String(name).trim());
+      fields.push(`name = $${params.length}`);
+    }
+
+    if (email !== undefined && email !== null && String(email).trim() !== "") {
+      const emailStr = String(email).trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(emailStr)) {
+        return res.status(400).json({ error: "Invalid email format" });
+      }
+
+      params.push(emailStr);
+      fields.push(`email = $${params.length}`);
+    }
+
+    if (fields.length === 0) {
+      return res.status(400).json({ error: "No fields provided to update" });
+    }
+
+    params.push(userId);
+    const idPlaceholder = `$${params.length}`;
+
+    const sql = `
+      UPDATE users
+      SET ${fields.join(", ")}
+      WHERE id = ${idPlaceholder}
+      RETURNING id, name, email
+    `;
+
+    const result = await pool.query(sql, params);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.json({ message: "Profile updated", user: result.rows[0] });
+  } catch (error) {
+    console.error("updateProfile error:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
 };

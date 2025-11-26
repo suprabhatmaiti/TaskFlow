@@ -46,13 +46,98 @@ export const createTask = async (req, res) => {
 
 export const getAllTasks = async (req, res) => {
   try {
-    const result = await pool.query(
-      "SELECT title,due_date,id,priority_id,description,status_id FROM tasks WHERE user_id=$1 ORDER BY id DESC",
-      [req.user?.id]
-    );
-    const count = result.rows.length;
-    res.json({ count: count, tasks: result.rows });
+    const {
+      startDate = "",
+      endDate = "",
+      search = "",
+      sortBy = "",
+      order = "DESC",
+      page = "1",
+      pageSize = "10",
+    } = req.query;
+
+    console.error(req.query);
+
+    const pageNum = Math.max(1, parseInt(page, 10) || 1);
+    const sizeNum = Math.min(100, Math.max(1, parseInt(pageSize, 10) || 10));
+    const offset = (pageNum - 1) * sizeNum;
+    const params = [];
+    const where = [];
+
+    if (
+      startDate !== undefined &&
+      startDate !== null &&
+      String(startDate).trim() !== ""
+    ) {
+      const start_date = new Date(startDate);
+      params.push(start_date);
+      where.push(`(due_date <= $${params.length})`);
+    }
+    if (
+      endDate !== undefined &&
+      endDate !== null &&
+      String(endDate).trim() !== ""
+    ) {
+      const end_date = new Date(endDate);
+      params.push(end_date);
+      where.push(`(due_date <= $${params.length})`);
+    }
+
+    if (search) {
+      params.push(`%${search.trim()}%`);
+      where.push(
+        `(title ILIKE $${params.length} OR description ILIKE $${params.length})`
+      );
+    }
+    params.push(req.user?.id);
+    where.push(`(user_id = $${params.length})`);
+    const whereSql = where.length ? `WHERE ${where.join(" AND ")}` : "";
+
+    let orderBySql = "";
+    if (sortBy.trim() === "high_priority") {
+      orderBySql = `ORDER BY priority_id DESC NULLS LAST`;
+    } else if (sortBy.trim() === "low_priority") {
+      orderBySql = `ORDER BY priority_id ASC NULLS LAST`;
+    } else if (sortBy.trim() === "due_date") {
+      orderBySql = `ORDER BY due_date ${
+        order.toUpperCase() === "ASC" ? "ASC" : "DESC"
+      } NULLS LAST`;
+    }
+
+    const dataSql = `
+      SELECT title,due_date,id,priority_id,description,status_id
+      FROM tasks
+      ${whereSql}
+      ${orderBySql}
+      LIMIT $${params.length + 1} OFFSET $${params.length + 2}
+    `;
+    const dataParams = [...params, sizeNum, offset];
+
+    const countSql = `
+      SELECT COUNT(*)::int AS total
+      FROM tasks
+      ${whereSql}
+    `;
+
+    const [dataResult, countResult] = await Promise.all([
+      pool.query(dataSql, dataParams),
+      pool.query(countSql, params),
+    ]);
+
+    const totalTasks = countResult.rows[0]?.total ?? 0;
+    const totalPages = Math.max(1, Math.ceil(totalTasks / sizeNum));
+
+    res.status(200).json({
+      tasks: dataResult.rows,
+      pagination: {
+        totalTasks,
+        totalPages,
+        currentPage: pageNum,
+        pageSize: sizeNum,
+      },
+    });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -78,7 +163,7 @@ export const updateTask = async (req, res) => {
   const { taskId } = req.params;
   try {
     const { title, description, status_id, priority_id, due_date } = req.body;
-    let querysql = [];
+    const querysql = [];
     const params = [];
     if (title !== undefined && title !== null && String(title).trim() !== "") {
       params.push(title);

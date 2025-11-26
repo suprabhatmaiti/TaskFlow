@@ -9,6 +9,7 @@ import DashboardPage from "./pages/DashboardPage/index.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicRoute from "./components/PublicRoute.jsx";
 import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
+import FilterBox from "./pages/DashboardPage/FilterBox.jsx";
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/filter",
+        element: (
+          <ProtectedRoute>
+            <FilterBox />
           </ProtectedRoute>
         ),
       },

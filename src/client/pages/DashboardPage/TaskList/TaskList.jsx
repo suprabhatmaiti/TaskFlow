@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { deleteTask, updateTask } from "../../services/taskServices";
+import { deleteTask, updateTask } from "../../../services/taskServices";
 import { toast } from "react-toastify";
 import Task from "./Task";
 

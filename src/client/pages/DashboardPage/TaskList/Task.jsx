@@ -1,6 +1,6 @@
 import React from "react";
 import { MdOutlineEdit, MdDeleteOutline } from "react-icons/md";
-import EditAccordian from "./editTask/EditAccordian";
+import EditAccordian from "../editTask/EditAccordian";
 
 const priority = {
   1: "Low Priority",

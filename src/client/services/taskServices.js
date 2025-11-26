@@ -1,7 +1,11 @@
 import api from "../utils/api";
 
-export const getTasks = async () => {
-  return await api.post("/api/task/tasks");
+export const getTasks = async (params) => {
+  // console.log(params);
+  return await api.get("/api/task/tasks", {
+    params,
+    withCredentials: true,
+  });
 };
 
 export const createTask = async (payload) => {
