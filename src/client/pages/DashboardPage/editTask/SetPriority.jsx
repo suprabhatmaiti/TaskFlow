@@ -7,7 +7,6 @@ function SortPriority({ state, setCheck }) {
     { label: "Mid", value: 2 },
     { label: "Low", value: 1 },
   ];
-  console.log(state);
   const togglePriorityValues = (value) => {
     setCheck(value);
   };

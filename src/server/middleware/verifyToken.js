@@ -12,11 +12,9 @@ export const verifyToken = (req, res, next) => {
     if (!token) {
       return res.status(401).json({ error: "Unauthorized: malformed token" });
     }
-    // console.log(token);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decoded;
-    // console.log('Token verified, user:', decoded);
     next();
   } catch (error) {
     console.log(error);

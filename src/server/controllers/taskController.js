@@ -50,7 +50,6 @@ export const getAllTasks = async (req, res) => {
       "SELECT title,due_date,id,priority_id,description,status_id FROM tasks WHERE user_id=$1 ORDER BY id DESC",
       [req.user?.id]
     );
-    console.log(result.rows);
     const count = result.rows.length;
     res.json({ count: count, tasks: result.rows });
   } catch (err) {
@@ -97,15 +96,17 @@ export const updateTask = async (req, res) => {
       params.push(Number(priority_id));
       querysql.push(`priority_id = $${params.length}`);
     }
-    const dueDate = new Date(due_date);
-    const now = new Date();
-    if (dueDate <= now) {
-      return res.status(400).json({
-        error: "Due date must be greater then today",
-      });
+    if (due_date) {
+      const dueDate = new Date(due_date);
+      const now = new Date();
+      if (dueDate <= now) {
+        return res.status(400).json({
+          error: "Due date must be greater then today",
+        });
+      }
+      params.push(dueDate);
+      querysql.push(`due_date = $${params.length}`);
     }
-    params.push(due_date);
-    querysql.push(`due_date = $${params.length}`);
 
     params.push(taskId);
     const idCluse = `id=$${params.length}`;

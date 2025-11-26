@@ -4,20 +4,10 @@ function Input({ label, className, mode = "input", edit = true, ...rest }) {
   return (
     <div>
       {label && (
-        <label className="text-md font-medium text-gray-600">{label}</label>
+        <label className="text-md  font-medium text-gray-600">{label}</label>
       )}
       {mode === "input" ? (
-        <div>
-          {edit ? (
-            <input {...rest} className={classes} />
-          ) : (
-            <input
-              {...rest}
-              className={classes + " bg-transparent cursor-not-allowed"}
-              disabled
-            />
-          )}
-        </div>
+        <div>{edit && <input {...rest} className={classes} />}</div>
       ) : (
         <textarea {...rest} className={classes}></textarea>
       )}

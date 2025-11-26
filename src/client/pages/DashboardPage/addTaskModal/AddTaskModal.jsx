@@ -6,7 +6,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { createTask } from "../../../services/taskServices.js";
 
-function AddTaskModal({ closeModal, refresh }) {
+function AddTaskModal({ closeModal, setRefresh }) {
   const [state, dispatch] = useReducer(taskReducer, initialState);
 
   const priority = [
@@ -44,7 +44,7 @@ function AddTaskModal({ closeModal, refresh }) {
 
       toast.success("Task Created Successfully");
       closeModal(false);
-      refresh();
+      setRefresh();
     } catch (error) {
       if (error?.response?.data?.error) {
         toast.error(error?.response?.data?.error);
@@ -61,8 +61,8 @@ function AddTaskModal({ closeModal, refresh }) {
   return (
     <div className="fixed inset-0 backdrop-blur-sm flex flex-col justify-center items-center z-50">
       <form
-        className="bg-white rounded-2xl shadow-2xl relative 
-          w-11/12 sm:w-1/2 md:w-2/3 lg:w-2/3 
+        className="bg-white rounded-2xl shadow-2xl relative flex flex-col justify-center items-center
+          w-11/12 sm:w-2/3  lg:w-1/2 
           p-6 md:p-8 
           animate-fade-in-up"
         onSubmit={handleSubmit}
@@ -70,12 +70,12 @@ function AddTaskModal({ closeModal, refresh }) {
         <div className="flex justify-end ">
           <button
             onClick={handleCloseModal}
-            className="bg-gray-200 px-2 rounded-lg hover:bg-gray-400 hover:text-red-400 cursor-pointer"
+            className=" absolute right-4 bg-gray-200 px-2 rounded-lg hover:bg-gray-400 hover:text-red-400 cursor-pointer"
           >
             X
           </button>
         </div>
-        <div className="bg-white shadow-md rounded-2xl w-full max-w-3xl p-6 md:p-10">
+        <div className="bg-white w-full max-w-3xl p-6 md:p-10">
           <div className="text-center mb-6">
             <h2 className="text-2xl md:text-3xl font-bold mb-1">
               Create a New Task

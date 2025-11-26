@@ -3,21 +3,16 @@ import Dropdown from "../../../components/Dropdown";
 import { useEffect, useState } from "react";
 import SortPriority from "./SetPriority";
 import { updateTask } from "../../../services/taskServices";
-function EditAccordian({ data, handleUpdate }) {
-  console.log(data);
+import { toast } from "react-toastify";
+
+function EditAccordian({ data, handleUpdate, handleCancel }) {
   const [state, setState] = useState({
     title: "",
     description: "",
     priority: "",
-    dueDate: "",
-    loading: false,
+    due_date: "",
   });
-
-  const priority = [
-    { label: "Low", value: 1 },
-    { label: "Mid", value: 2 },
-    { label: "High", value: 3 },
-  ];
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -26,50 +21,39 @@ function EditAccordian({ data, handleUpdate }) {
 
   useEffect(() => {
     if (data) {
+      console.log(data);
+      const toInputDate = (iso) => {
+        if (!iso) return "";
+        return iso.split("T")[0];
+      };
+      console.log(data.due_date);
       setState({
         title: data.title,
         description: data.description,
         priority: data.priority_id,
-        dueDate: data.due_date,
+        due_date: toInputDate(data.due_date),
       });
     }
   }, [data]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setState({ ...state, loading: true });
-
-    try {
-      const response = await fetch("/api/tasks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(state),
-      });
-
-      if (response.ok) {
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setState({ ...state, loading: false });
-    }
-  };
   const setCheckBox = (value) => {
     setState({ ...state, priority: value });
+    console.log(state);
   };
   const handleUpdateTask = async () => {
     try {
-      setState({ ...state, loading: true });
-      const response = await updateTask(state, data.id);
-      if (response.ok) {
+      setLoading(true);
+      const payload = state;
+      const response = await updateTask(payload, data.id);
+      if (response.status === 200) {
+        toast.success("Task Updated Successfully");
         handleUpdate();
       }
     } catch (error) {
       console.error(error);
+      toast.error(error?.response?.data?.error || "Something went wrong");
     } finally {
-      setState({ ...state, loading: false });
+      setLoading(false);
     }
   };
 
@@ -92,8 +76,8 @@ function EditAccordian({ data, handleUpdate }) {
               <Input
                 label="Due Date"
                 type="date"
-                name="dueDate"
-                value={state.dueDate}
+                name="due_date"
+                value={state.due_date}
                 onChange={handleInputChange}
               />
             </div>
@@ -113,10 +97,7 @@ function EditAccordian({ data, handleUpdate }) {
 
           <div className="flex md:flex-col gap-4 items-center ">
             <div className="w-full mb-2 md:mb-1">
-              <SortPriority
-                state={state}
-                setCheck={(value) => setCheckBox(value)}
-              />
+              <SortPriority state={state} setCheck={setCheckBox} />
             </div>
           </div>
           <div className="flex gap-4  justify-end items-center">
@@ -124,18 +105,18 @@ function EditAccordian({ data, handleUpdate }) {
               <button
                 className="cursor-pointer bg-gray-200 hover:bg-gray-400 active:bg-gray-200  w-full px-2 py-1 rounded-lg font-semibold transition disabled:opacity-50md:px-6 md:py-3 rounded-lg font-semibold transition disabled:opacity-50  duration-200"
                 type="submit"
-                disabled={state.loading}
-                onClick={() => setEditId(null)}
+                disabled={loading}
+                onClick={handleCancel}
               >
                 Cancel
               </button>
               <button
                 className="cursor-pointer bg-blue-600 hover:bg-blue-700 active:bg-blue-600 text-white w-full md:px-6 md:py-3  px-2 py-1 rounded-lg font-semibold transition disabled:opacity-50  duration-200"
                 type="submit"
-                disabled={state.loading}
+                disabled={loading}
                 onClick={handleUpdateTask}
               >
-                {state.loading ? "Saving..." : "Save"}
+                {loading ? "Saving..." : "Save"}
               </button>
             </div>
           </div>
