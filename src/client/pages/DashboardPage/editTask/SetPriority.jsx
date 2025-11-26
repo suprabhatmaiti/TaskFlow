@@ -13,7 +13,7 @@ function SortPriority({ state, setCheck }) {
 
   const renderedValues = values.map((value) => {
     // console.log(state);
-    const checked = state.priority === value.value;
+    const checked = state.priority_id === value.value;
 
     return (
       <div

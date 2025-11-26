@@ -80,24 +80,55 @@ export const updateTask = async (req, res) => {
     const { title, description, status_id, priority_id, due_date } = req.body;
     let querysql = [];
     const params = [];
-    if (title !== "") {
+    if (title !== undefined && title !== null && String(title).trim() !== "") {
       params.push(title);
       querysql.push(`title = $${params.length}`);
     }
-    if (description) {
+    if (
+      description !== undefined &&
+      description !== null &&
+      String(description).trim() !== ""
+    ) {
       params.push(description);
       querysql.push(`description = $${params.length}`);
     }
-    if (status_id) {
+    if (
+      status_id !== undefined &&
+      status_id !== null &&
+      String(status_id).trim() !== ""
+    ) {
+      const num = Number(status_id);
+      if (Number.isNaN(num) || !Number.isInteger(num)) {
+        return res
+          .status(400)
+          .json({ error: "Invalid status_id; must be an integer" });
+      }
       params.push(Number(status_id));
       querysql.push(`status_id = $${params.length}`);
     }
-    if (priority_id) {
+    if (
+      priority_id !== undefined &&
+      priority_id !== null &&
+      String(priority_id).trim() !== ""
+    ) {
+      const num = Number(priority_id);
+      if (Number.isNaN(num) || !Number.isInteger(num)) {
+        return res
+          .status(400)
+          .json({ error: "Invalid status_id; must be an integer" });
+      }
       params.push(Number(priority_id));
       querysql.push(`priority_id = $${params.length}`);
     }
-    if (due_date) {
+    if (
+      due_date !== undefined &&
+      due_date !== null &&
+      String(due_date).trim() !== ""
+    ) {
       const dueDate = new Date(due_date);
+      if (Number.isNaN(dueDate.getTime())) {
+        return res.status(400).json({ error: "Invalid due_date format" });
+      }
       const now = new Date();
       if (dueDate <= now) {
         return res.status(400).json({

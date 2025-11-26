@@ -9,8 +9,9 @@ function EditAccordian({ data, handleUpdate, handleCancel }) {
   const [state, setState] = useState({
     title: "",
     description: "",
-    priority: "",
+    priority_id: "",
     due_date: "",
+    status_id: "1",
   });
   const [loading, setLoading] = useState(false);
 
@@ -27,17 +28,18 @@ function EditAccordian({ data, handleUpdate, handleCancel }) {
         return iso.split("T")[0];
       };
       console.log(data.due_date);
-      setState({
+      setState((prev) => ({
+        ...prev,
         title: data.title,
         description: data.description,
-        priority: data.priority_id,
+        priority_id: data.priority_id,
         due_date: toInputDate(data.due_date),
-      });
+      }));
     }
   }, [data]);
 
   const setCheckBox = (value) => {
-    setState({ ...state, priority: value });
+    setState({ ...state, priority_id: value });
     console.log(state);
   };
   const handleUpdateTask = async () => {

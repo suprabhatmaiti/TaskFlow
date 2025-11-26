@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { deleteTask } from "../../services/taskServices";
+import { deleteTask, updateTask } from "../../services/taskServices";
 import { toast } from "react-toastify";
 import Task from "./Task";
 
@@ -17,7 +17,14 @@ function TaskList({ tasks, setRefresh }) {
   const handleEditClick = (id) => {
     setEditId(id);
   };
-  const handleDoneClick = (id) => {};
+  const handleDoneClick = async (id) => {
+    try {
+      const payload = { status_id: 3 };
+      await updateTask(payload, id);
+      toast.success("Task Completed Successfully");
+      setRefresh();
+    } catch (error) {}
+  };
   const handleDeleteClick = async (id) => {
     console.log(id);
     try {

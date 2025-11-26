@@ -22,10 +22,10 @@ export default function Task({
   return (
     <div
       key={data.id}
-      className="w-full bg-white border border-gray-300 rounded-2xl p-4 shadow-sm hover:shadow-xl transition mb-4"
+      className="w-full overflow-hidden bg-white border border-gray-300 rounded-2xl p-4 shadow-sm hover:shadow-xl transition mb-4"
     >
-      <div className="flex justify-between">
-        <div className="mb-4">
+      <div className="md:flex justify-between ">
+        <div className="mb-4 ">
           <h2
             className={`text-lg font-medium ${
               data.status_id === 3 ? "line-through" : ""
