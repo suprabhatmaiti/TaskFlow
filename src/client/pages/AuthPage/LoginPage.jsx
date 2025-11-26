@@ -1,6 +1,7 @@
 import loginImg from "../../assets/loginImg.svg";
 import { MdTaskAlt } from "react-icons/md";
 import useAuth from "../../hook/useAuth";
+import { useNavigate } from "react-router-dom";
 import {
   initialState,
   reducer,
@@ -15,6 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 function LoginPage({ setLoginPage }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleLoginClick = async (e) => {
     e.preventDefault();
@@ -22,6 +24,15 @@ function LoginPage({ setLoginPage }) {
     try {
       const result = await login(payload); // await directly
       console.log("Login successful", result);
+      navigate("/dashboard");
+      toast.success("Login Successfull", {
+        position: "top-center",
+        autoClose: 4000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
     } catch (error) {
       if (error.response?.data?.error) {
         dispatch({ type: SET_ERROR, value: error.response.data.error });
@@ -31,7 +42,7 @@ function LoginPage({ setLoginPage }) {
           closeOnClick: true,
           pauseOnHover: true,
           draggable: true,
-          theme: "light",
+          theme: "dark",
         });
       }
     } finally {

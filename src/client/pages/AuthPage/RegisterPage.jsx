@@ -10,11 +10,13 @@ import {
 } from "./reducers/authReducer.js";
 import { useReducer } from "react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function RegisterPage({ setLoginPage }) {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleSignupClick = async (e) => {
     e.preventDefault();
@@ -24,8 +26,8 @@ function RegisterPage({ setLoginPage }) {
       password: state.password,
     };
     try {
-      const endpoint = register(payload);
-      await endpoint;
+      const endpoint = await register(payload);
+      navigate("/dashboard");
     } catch (error) {
       if (error.response?.data?.error) {
         dispatch({ type: SET_ERROR, value: error.response.data.error });
@@ -70,11 +72,11 @@ function RegisterPage({ setLoginPage }) {
       <div className="hidden md:flex w-1/2 items-center justify-center">
         <div className="text-center">
           <img
-            className="shadow-[0px_20px_207px_10px_rgba(127,_228,_230,_0.43)] max-w-md rounded-xl size-70"
+            className="md:shadow-[0px_20px_207px_10px_rgba(127,_228,_230,_0.35)] max-w-md size-80 rounded-xl "
             src={loginImg}
             alt="loginImg"
           />
-          <div className="mt-6">
+          <div className="mt-10">
             <h2 className="text-3xl font-bold text-gray-800 dark:text-white">
               Organize your work
             </h2>

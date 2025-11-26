@@ -1,8 +1,8 @@
-import { useReducer, useState } from "react";
+import { useState } from "react";
 
 import RegisterPage from "./RegisterPage";
 import LoginPage from "./LoginPage";
-import useAuth from "../../hook/useAuth";
+
 function AuthPage() {
   const [loginPage, setLoginPage] = useState(true);
 
