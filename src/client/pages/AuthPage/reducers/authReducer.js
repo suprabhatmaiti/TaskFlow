@@ -4,6 +4,7 @@ export const initialState = {
   password: "",
   confirmPassword: "",
   error: "",
+  loading: false,
 };
 
 export const UPDATE_FIELD = "UPDATE_FIELD";
