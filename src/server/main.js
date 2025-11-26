@@ -13,10 +13,6 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-app.get("/hello", (req, res) => {
-  res.send("Hello Vite + React!");
-});
-
 app.use("/api/auth", authRoutes);
 app.use("/api/task", verifyToken, taskRoutes);
 
