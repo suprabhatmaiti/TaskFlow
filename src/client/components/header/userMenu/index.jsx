@@ -1,11 +1,13 @@
 import { CgProfile, CgLogOut, CgBell } from "react-icons/cg";
 import { FiSettings, FiHelpCircle, FiHeart, FiClock } from "react-icons/fi";
 import useAuth from "../../../hook/useAuth";
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 function UserMenu() {
   const { user, logout } = useAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userRef = useRef();
+  const navigate = useNavigate();
 
   const classes =
     "hover:bg-gray-100 px-3 py-2 flex items-center gap-2 cursor-pointer rounded-md transition-all duration-200";
@@ -29,6 +31,11 @@ function UserMenu() {
     };
   }, []);
 
+  const onProfileClick = () => {
+    navigate("/profile");
+    setUserMenuOpen(false);
+  };
+
   return (
     <div className="relative flex items-center gap-4 text-black " ref={userRef}>
       <CgProfile
@@ -46,18 +53,15 @@ function UserMenu() {
           <span className="font-semibold">Welcome, {user?.name}</span>
         </div>
 
-        <div
-          //   onClick={onSettingClick}
-          className={classes}
-        >
+        <div onClick={onProfileClick} className={classes}>
           <FiSettings className="size-5 text-gray-600" />
           <span className="font-medium">Profile</span>
         </div>
 
-        <div className={classes}>
+        {/* <div className={classes}>
           <FiHelpCircle className="size-5 text-gray-600" />
           <span className="font-medium">Help & Support</span>
-        </div>
+        </div> */}
 
         <div onClick={handleLogoutClick} className={`${classes} text-red-600`}>
           <CgLogOut className="size-5" />
