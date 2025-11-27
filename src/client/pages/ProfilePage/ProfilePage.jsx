@@ -5,7 +5,9 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 function ProfilePage() {
-  const { user, toggleRefresh, logout } = useAuth();
+  const { user, setUserSpecs, logout } = useAuth();
+
+  console.log(user);
   const initial = user?.name?.charAt(0)?.toUpperCase();
   const navigate = useNavigate();
   const [userDetails, setUserDetails] = useState({
@@ -48,9 +50,8 @@ function ProfilePage() {
       setUserDetails(response.data.user);
       toast.success("Profile Updated Successfully");
       navigate("/");
-      await toggleRefresh();
+      setUserSpecs((prev) => ({ ...prev, ...userDetails }));
     } catch (error) {
-      //   console.log(error?.response?.data?.error);
       if (error?.response?.data?.error)
         toast.error(error?.response?.data?.error);
       else toast.error("Something went wrong");

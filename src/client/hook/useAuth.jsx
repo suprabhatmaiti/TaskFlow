@@ -7,17 +7,21 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const setUserSpecs = (data) => {
+    setUser(data);
+  };
   const decodeAndSetUser = (token) => {
     if (!token) {
-      setUser(null);
+      setUserSpecs(null);
       return;
     }
     try {
       const decoded = jwtDecode(token);
-      setUser(decoded);
+      setUserSpecs(decoded);
     } catch (error) {
       console.log("Error decoding token:", error);
-      setUser(null);
+      setUserSpecs(null);
     }
   };
   const toggleRefresh = async () => {
@@ -98,7 +102,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         loading,
-        toggleRefresh,
+        setUserSpecs,
       }}
     >
       {children}
