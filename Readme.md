@@ -169,15 +169,6 @@ TaskFlow/
 
 **Author:** [Your Name]
 
-### Security & Scalability
-
-- Password hashing (bcrypt or similar)
-- JWT authentication middleware
-- Error handling & validation
-- Code structured for easy scaling
-
-## Deliverables
-
 - Frontend (React/Next.js) + Basic Backend (Node.js/Python) hosted in a GitHub repo
 - Functional authentication (register/login/logout with JWT)
 - Dashboard with CRUD-enabled entity
