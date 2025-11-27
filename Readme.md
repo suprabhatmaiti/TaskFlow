@@ -166,22 +166,5 @@ TaskFlow/
 ```
 
 ---
-### 5. Scaling Strategy
-
-To move this application from a development setup to a production-ready, scalable environment, the following strategies are proposed:
-
-1.  **Decouple Frontend & Backend:**
-    - Stop using `vite-express`.
-    - Host React Frontend on a CDN (Vercel/Netlify/AWS CloudFront) for fast global access.
-    - Host Node.js Backend on a dedicated container service (AWS ECS/Heroku/Docker).
-2.  **Horizontal Scaling:**
-    - The API is stateless (thanks to JWT). We can run multiple instances of the backend behind a **Load Balancer** (e.g., Nginx or AWS ELB) to handle high traffic.
-3.  **Database Optimization:**
-    - Switch to a managed PostgreSQL instance (e.g., AWS RDS).
-    - Implement **Connection Pooling** to manage DB connections efficiently.
-    - Add **Read Replicas** if the application becomes read-heavy.
-4.  **Caching:**
-    - Implement **Redis** to cache frequent API responses (like the Dashboard task list) to reduce database load.
----
 
 **Author:** [Suprabhat Maiti]
