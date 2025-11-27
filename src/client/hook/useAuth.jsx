@@ -24,20 +24,6 @@ export const AuthProvider = ({ children }) => {
       setUserSpecs(null);
     }
   };
-  const toggleRefresh = async () => {
-    try {
-      setLoading(true);
-      const { data } = await api.post("/api/auth/refresh-token");
-      setAccessToken(data.accessToken);
-      decodeAndSetUser(data.accessToken);
-    } catch (error) {
-      // console.log("Error refreshing token:", error);
-      setUser(null);
-      setAccessToken(null);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     (async () => {
