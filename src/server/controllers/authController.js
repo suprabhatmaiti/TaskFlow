@@ -30,8 +30,9 @@ function generateRefreshToken(user) {
 
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
+  console.log(name, email, password);
   try {
-    if (name !== undefined && name !== null && String(name).trim() !== "") {
+    if (name === undefined && name === null && String(name).trim() === "") {
       return res.status(400).json({ error: "Invalid name" });
     }
     if (email !== undefined && email !== null && String(email).trim() !== "") {

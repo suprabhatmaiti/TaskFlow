@@ -190,13 +190,15 @@ function DashboardPage() {
           )}
         </div>
         <div className="flex justify-center mt-8 pb-20">
-          <button
-            onClick={handleLoadMore}
-            disabled={!hasMore || loading}
-            className="bg-gray-700 hover:bg-gray-600 disabled:opacity-40 text-white px-6 py-2 rounded-lg font-semibold transition"
-          >
-            {loading ? "Loading..." : hasMore ? "Load More" : "No More"}
-          </button>
+          {tasks.length !== 0 && (
+            <button
+              onClick={handleLoadMore}
+              disabled={!hasMore || loading}
+              className="bg-gray-700 hover:bg-gray-600 disabled:opacity-40 text-white px-6 py-2 rounded-lg font-semibold transition"
+            >
+              {loading ? "Loading..." : hasMore ? "Load More" : "No Tasks"}
+            </button>
+          )}
         </div>
       </div>
       {openTaskModal && (
