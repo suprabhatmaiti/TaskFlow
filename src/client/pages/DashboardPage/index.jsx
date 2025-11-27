@@ -2,10 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import AddTaskModal from "./addTaskModal/AddTaskModal";
 import api from "../../utils/api";
 import LoadingOverlay from "../../components/LoadingOverlay";
-import { getTasks, updateTask } from "../../services/taskServices";
+import { getTasks } from "../../services/taskServices";
 import TaskList from "./TaskList/TaskList";
 import { FaSearch } from "react-icons/fa";
-import Dropdown from "../../components/Dropdown";
 import FilterBox from "./FilterBox";
 import { toast } from "react-toastify";
 function DashboardPage() {
@@ -15,6 +14,7 @@ function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [openFilter, setOpenFilter] = useState(false);
   const [filters, setFilters] = useState({
     startDate: "",
@@ -32,31 +32,37 @@ function DashboardPage() {
   const onSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
-  let hasMore;
   useEffect(() => {
     let mounted = true;
     async function fetchTasks() {
       try {
         setLoading(true);
-        const params = {
+        const param = {
           startDate: filters.startDate,
           endDate: filters.endDate,
           page: page,
           search: searchTerm,
         };
-        console.log(params);
-        const { data } = await getTasks(params);
+        // console.log(param);
+        const { data } = await getTasks(param);
 
-        console.log(data);
-        if (!mounted) return;
+        // console.log(data);
         const taskData = data?.tasks;
-        setTasks(taskData);
+        // setTasks(taskData);
+        setTasks((prev) => {
+          if (page === 1) {
+            return taskData;
+          } else {
+            return [...prev, ...taskData];
+          }
+        });
+        setPage(data?.pagination?.currentPage || 1);
+        setTotalPages(data?.pagination?.totalPages || 1);
 
         const pg = data?.pagination || {};
         if (pg.currentPage !== page) {
           setPage(pg.currentPage);
         }
-        hasMore = state.page < state.totalPages;
       } catch (err) {
         if (!mounted) return;
         console.error("Failed to fetch tasks:", err);
@@ -91,7 +97,8 @@ function DashboardPage() {
   const handleRefresh = () => {
     setToRefresh(!toRefresh);
   };
-  const handleSearch = () => {
+  const handleSearch = (e) => {
+    e.preventDefault();
     setFilters({
       startDate: "",
       endDate: "",
@@ -114,10 +121,11 @@ function DashboardPage() {
   };
 
   const filterRef = useRef();
+  const hasMore = page < totalPages;
 
   const handleLoadMore = () => {
     if (hasMore) {
-      dispatch({ type: "SET_PAGE", page: state.page + 1 });
+      setPage((prev) => prev + 1);
     }
   };
 
@@ -150,20 +158,22 @@ function DashboardPage() {
           </button>
         </div>
       </div>
-      <div className="mb-6 w-full flex items-center justify-between gap-1">
-        <input
-          className="border border-gray-400 w-full rounded-full p-2"
-          type="text"
-          placeholder="Search Task"
-          value={searchTerm}
-          onChange={onSearchChange}
-        />
-        <button
-          onClick={handleSearch}
-          className="text-blue-600 text-xl font-5xl hover:bg-gray-200 rounded-full p-2 cursor-pointer"
+      <div className="mb-6 w-full ">
+        <form
+          onSubmit={handleSearch}
+          className="flex items-center justify-between gap-1"
         >
-          <FaSearch />
-        </button>
+          <input
+            className="border border-gray-400 w-full rounded-full p-2"
+            type="text"
+            placeholder="Search Task"
+            value={searchTerm}
+            onChange={onSearchChange}
+          />
+          <button className="text-blue-600 text-xl font-5xl hover:bg-gray-200 rounded-full p-2 cursor-pointer">
+            <FaSearch />
+          </button>
+        </form>
       </div>
       <div className="w-full">
         <div>
@@ -188,7 +198,6 @@ function DashboardPage() {
             {loading ? "Loading..." : hasMore ? "Load More" : "No More"}
           </button>
         </div>
-        s
       </div>
       {openTaskModal && (
         <AddTaskModal

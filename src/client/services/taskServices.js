@@ -1,9 +1,8 @@
 import api from "../utils/api";
 
-export const getTasks = async (params) => {
-  // console.log(params);
+export const getTasks = async (param) => {
   return await api.get("/api/task/tasks", {
-    params,
+    params: param,
     withCredentials: true,
   });
 };

@@ -27,7 +27,7 @@ export const AuthProvider = ({ children }) => {
       setAccessToken(data.accessToken);
       decodeAndSetUser(data.accessToken);
     } catch (error) {
-      console.log("Error refreshing token:", error);
+      // console.log("Error refreshing token:", error);
       setUser(null);
       setAccessToken(null);
     } finally {
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
         setAccessToken(data.accessToken);
         decodeAndSetUser(data.accessToken);
       } catch (error) {
-        console.log("Error refreshing token:", error);
+        // console.log("Error refreshing token:", error);
         setUser(null);
         setAccessToken(null);
       } finally {

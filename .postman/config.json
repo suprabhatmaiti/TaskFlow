@@ -1,0 +1,14 @@
+{
+  "workspace": {
+    "id": "692caaca-e106-42df-8c70-559200f44f45"
+  },
+  "entities": {
+    "collections": [
+      "../postman/collections/TaskFlow API.postman_collection.json"
+    ],
+    "environments": [],
+    "specs": [],
+    "flows": [],
+    "globals": []
+  }
+}

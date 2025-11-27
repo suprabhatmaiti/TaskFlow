@@ -12,6 +12,8 @@ export const createTask = async (req, res) => {
     }
 
     const dueDate = new Date(due_date);
+    dueDate.setDate(dueDate.getDate() + 1);
+
     if (Number.isNaN(dueDate.getTime())) {
       return res.status(400).json({ error: "Invalid due date" });
     }
@@ -56,8 +58,6 @@ export const getAllTasks = async (req, res) => {
       pageSize = "10",
     } = req.query;
 
-    console.error(req.query);
-
     const pageNum = Math.max(1, parseInt(page, 10) || 1);
     const sizeNum = Math.min(100, Math.max(1, parseInt(pageSize, 10) || 10));
     const offset = (pageNum - 1) * sizeNum;
@@ -71,7 +71,7 @@ export const getAllTasks = async (req, res) => {
     ) {
       const start_date = new Date(startDate);
       params.push(start_date);
-      where.push(`(due_date <= $${params.length})`);
+      where.push(`(due_date >= $${params.length})`);
     }
     if (
       endDate !== undefined &&
@@ -211,6 +211,8 @@ export const updateTask = async (req, res) => {
       String(due_date).trim() !== ""
     ) {
       const dueDate = new Date(due_date);
+      dueDate.setDate(dueDate.getDate() + 1);
+
       if (Number.isNaN(dueDate.getTime())) {
         return res.status(400).json({ error: "Invalid due_date format" });
       }
