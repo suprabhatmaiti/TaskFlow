@@ -168,9 +168,3 @@ TaskFlow/
 ---
 
 **Author:** [Your Name]
-
-- Frontend (React/Next.js) + Basic Backend (Node.js/Python) hosted in a GitHub repo
-- Functional authentication (register/login/logout with JWT)
-- Dashboard with CRUD-enabled entity
-- Postman collection or API docs: [Link to Postman Collection/API Docs]
-- Note on how you would scale the frontend-backend integration for production: [Link to Scaling Notes]
